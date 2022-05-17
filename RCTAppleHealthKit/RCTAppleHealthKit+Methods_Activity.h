@@ -14,5 +14,6 @@
 - (void)activity_getBasalEnergyBurned:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)activity_getAppleExerciseTime:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)activity_getAppleStandTime:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)activity_getAnchoredQuery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 
 @end

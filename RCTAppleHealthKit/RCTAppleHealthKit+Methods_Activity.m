@@ -152,4 +152,33 @@
                                       }];
 }
 
+- (void)activity_getAnchoredQuery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSUInteger limit = [RCTAppleHealthKit uintFromOptions:input key:@"limit" withDefault:HKObjectQueryNoLimit];
+    
+    HKSampleType *sampleType = [RCTAppleHealthKit quantityTypeFromName:[input objectForKey:@"type"]];
+    HKQueryAnchor *anchor = [RCTAppleHealthKit hkAnchorFromOptions:input];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+    
+    NSPredicate *predicate = [RCTAppleHealthKit predicateForAnchoredQueries:anchor startDate:startDate endDate:endDate];
+
+    void (^completion)(NSDictionary *results, NSError *error);
+
+    completion = ^(NSDictionary *results, NSError *error) {
+        if (results){
+            callback(@[[NSNull null], results]);
+
+            return;
+        } else {
+            NSLog(@"error getting samples: %@", error);
+            callback(@[RCTMakeError(@"error getting samples", error, nil)]);
+
+            return;
+        }
+    };
+
+    [self fetchAnchoredSamples:sampleType predicate:predicate anchor:anchor limit:limit resultsHandler:completion];
+}
+
 @end
