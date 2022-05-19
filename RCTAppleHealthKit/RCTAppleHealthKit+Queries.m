@@ -424,11 +424,9 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 for (HKSample *sample in sampleObjects) {
                     @try {
-                        /*
-                        double energy =  [[sample ] doubleValueForUnit:[HKUnit kilocalorieUnit]];
-                        double distance = [[sample totalDistance] doubleValueForUnit:[HKUnit mileUnit]];
-                        NSString *type = [sample sampleType];
-                        */
+                        if ([sample isKindOfClass:[HKWorkout class]]) {
+                            [self fetchAnchoredWorkouts:type predicate:predicate anchor:anchor limit:limit completion:completion];
+                        }
                         
                         NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                         NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
@@ -449,16 +447,12 @@
                         }
 
                         NSDictionary *elem = @{
-                                               /*@"activityId" : [NSNumber numberWithInt:[sample sampleType ]],*/
                                                @"id" : [[sample UUID] UUIDString],
-                                               @"activityName" : type,
-                                               /*@"calories" : @(energy),*/
                                                @"tracked" : @(isTracked),
                                                @"metadata" : [sample metadata],
                                                @"sourceName" : [[[sample sourceRevision] source] name],
                                                @"sourceId" : [[[sample sourceRevision] source] bundleIdentifier],
                                                @"device": device,
-                                               /*@"distance" : @(distance),*/
                                                @"start" : startDateString,
                                                @"end" : endDateString
                                                };
